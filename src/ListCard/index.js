@@ -7,6 +7,7 @@ class ListCard extends Component {
     const {addCartCount, data} = this.props
     addCartCount(data)
   }
+
   decrementBtnClk = () => {
     const {removeCartCount, data} = this.props
     removeCartCount(data)
@@ -32,9 +33,8 @@ class ListCard extends Component {
       const cartItem = cartItems.find(each => each.dishId === dishId)
       if (cartItem !== undefined) {
         return <p className="text">{cartItem.quantity}</p>
-      } else {
-        return <p className="text">0</p>
       }
+      return <p className="text">0</p>
     }
 
     return (

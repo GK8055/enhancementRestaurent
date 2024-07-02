@@ -3,7 +3,6 @@ import './index.css'
 const TabItem = props => {
   const {tabClick, data, isActive} = props
   const {menuCategory, menuCategoryId} = data
-  //console.log(menuCategoryId)
   const styles = isActive ? 'styles' : ''
   const BtnClk = () => {
     tabClick(menuCategoryId)
