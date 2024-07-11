@@ -47,7 +47,8 @@ class App extends Component {
     }))
 
   getListData = async () => {
-    const url = 'https://run.mocky.io/v3/2477b10c-ee18-4487-9962-1b3d073432c4'
+    const url =
+      'https://apis2.ccbp.in/restaurant-app/restaurant-menu-list-details'
     const response = await fetch(url)
     const data = await response.json()
     console.log(data)

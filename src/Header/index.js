@@ -1,3 +1,4 @@
+import {FaCartPlus} from 'react-icons/fa'
 import {
   HeaderContainer,
   Heading,
@@ -6,8 +7,6 @@ import {
   ScoreContainer,
   ScoreBoard,
 } from './styledComponents'
-
-import {FaCartPlus} from 'react-icons/fa'
 
 const Header = props => {
   const {cartItems} = props
