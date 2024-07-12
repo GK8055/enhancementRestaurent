@@ -9,14 +9,16 @@ import {
 } from './styledComponents'
 
 const Header = props => {
-  const {cartItems} = props
+  const {cartItems,nameInput} = props
+  //console.log("name", nameInput[0])
+  const name=nameInput[0]===undefined?[]:nameInput[0]
   const renderScore = () =>
     cartItems.reduce((acc, item) => acc + item.quantity, 0)
 
+
   return (
     <HeaderContainer>
-      <Heading>UNI Resto Cafe</Heading>
-
+      <Heading>{name.restaurant_name}</Heading>
       <ScoreContainer>
         <Title>My Orders</Title>
         <CartImage>

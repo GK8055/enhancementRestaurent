@@ -21,7 +21,7 @@ export const CartImage = styled.p`
   width: 50px;
   color: black;
 `
-export const Title = styled.h1`
+export const Title = styled.p`
   font-family: 'Roboto';
   font-size: 22px;
   color: black;

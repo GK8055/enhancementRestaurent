@@ -20,10 +20,10 @@ class App extends Component {
     activeTabId: '',
     DishesList: [],
     cartItems: [],
+    name: [],
   }
 
   componentDidMount() {
-    // console.log("didMount()")
     this.getListData()
   }
 
@@ -57,6 +57,7 @@ class App extends Component {
       this.setState({
         status: apiStatus.success,
         list: updateData,
+        name: data,
         activeTabId: updateData[0].menuCategoryId,
         DishesList: updateData[0].categoryDishes,
       })
@@ -105,11 +106,11 @@ class App extends Component {
   }
 
   render() {
-    const {activeTabId, list, DishesList, cartItems} = this.state
+    const {activeTabId, name, list, DishesList, cartItems} = this.state
     return (
-      <div className="container">
-        <Header cartItems={cartItems} />
-        <ul className="tab_container">
+      <div className='container'>
+        <Header cartItems={cartItems} nameInput={name} />
+        <ul className='tab_container'>
           {list.map(each => (
             <TabItem
               data={each}
@@ -119,7 +120,7 @@ class App extends Component {
             />
           ))}
         </ul>
-        <ul className="list_container">
+        <ul className='list_container'>
           {DishesList.map(each => (
             <ListCard
               data={each}

@@ -1,5 +1,4 @@
 import './index.css'
-// import {useEffect,useState} from 'react'
 import {Component} from 'react'
 
 class ListCard extends Component {
@@ -32,42 +31,42 @@ class ListCard extends Component {
     const getQuantity = () => {
       const cartItem = cartItems.find(each => each.dishId === dishId)
       if (cartItem !== undefined) {
-        return <p className="text">{cartItem.quantity}</p>
+        return <p className='text'>{cartItem.quantity}</p>
       }
-      return <p className="text">0</p>
+      return <p className='text'>0</p>
     }
 
     return (
-      <li className="list_item_container">
-        <div className="text_container">
-          <h1 className="title">{dishName}</h1>
-          <p className="price">{dishCurrency}</p>
-          <p className="desc">{dishDescription}</p>
+      <li className='list_item_container'>
+        <div className='text_container'>
+          <h1 className='title'>{dishName}</h1>
+          <p className='price'>{dishCurrency}</p>
+          <p className='desc'>{dishDescription}</p>
           {dishAvailability ? (
-            <div className="btn_styles">
+            <div className='btn_styles'>
               <button
-                type="button"
-                className="icon_size"
+                type='button'
+                className='icon_size'
                 onClick={this.decrementBtnClk}
               >
                 -
               </button>
               {getQuantity()}
               <button
-                type="button"
-                className="icon_size"
+                type='button'
+                className='icon_size'
                 onClick={this.incrementBtnClk}
               >
                 +
               </button>
             </div>
           ) : (
-            <p className="desc">Not Available</p>
+            <p className='desc'>Not Available</p>
           )}
-          <p className="custamization">{custamization}</p>
+          <p className='custamization'>{custamization}</p>
         </div>
-        <p className="dish_calories">{dishCalories} Calories</p>
-        <img src={dishImage} alt={dishImage} className="dish_image" />
+        <p className='dish_calories'>{dishCalories} Calories</p>
+        <img src={dishImage} alt={dishImage} className='dish_image' />
       </li>
     )
   }
