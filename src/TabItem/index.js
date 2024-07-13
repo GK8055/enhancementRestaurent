@@ -8,8 +8,10 @@ const TabItem = props => {
     tabClick(menuCategoryId)
   }
   return (
-    <li className={`tab_item ${styles}`} onClick={BtnClk}>
-      {menuCategory}
+    <li className="btn_1">
+      <button type="button" className={`tab_item ${styles}`} onClick={BtnClk}>
+        {menuCategory}
+      </button>
     </li>
   )
 }

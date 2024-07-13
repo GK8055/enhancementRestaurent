@@ -4,6 +4,8 @@ import {Component} from 'react'
 import Header from './Header'
 import TabItem from './TabItem'
 import ListCard from './ListCard'
+import LoaderCard from './LoaderCard'
+import FailureCard from './FailureCard'
 
 const apiStatus = {
   success: 'SUCCESS',
@@ -105,12 +107,12 @@ class App extends Component {
     }
   }
 
-  render() {
-    const {activeTabId, name, list, DishesList, cartItems} = this.state
+  renderSuccessView = () => {
+    const {list, cartItems, name, activeTabId, DishesList} = this.state
     return (
-      <div className='container'>
+      <>
         <Header cartItems={cartItems} nameInput={name} />
-        <ul className='tab_container'>
+        <ul className="tab_container">
           {list.map(each => (
             <TabItem
               data={each}
@@ -120,7 +122,7 @@ class App extends Component {
             />
           ))}
         </ul>
-        <ul className='list_container'>
+        <ul className="list_container">
           {DishesList.map(each => (
             <ListCard
               data={each}
@@ -131,8 +133,31 @@ class App extends Component {
             />
           ))}
         </ul>
-      </div>
+      </>
     )
+  }
+
+  renderLoaderView = () => <LoaderCard />
+
+  renderFailureView = () => <FailureCard />
+
+  renderFinalView = () => {
+    const {status} = this.state
+
+    switch (status) {
+      case apiStatus.success:
+        return this.renderSuccessView()
+      case apiStatus.loading:
+        return this.renderLoaderView()
+
+      case apiStatus.failure:
+        return this.renderFailureView()
+    }
+  }
+
+  render() {
+    
+    return <div className="container">{this.renderFinalView()}</div>
   }
 }
 
