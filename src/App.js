@@ -1,163 +1,103 @@
-import './App.css'
 import {Component} from 'react'
+import {Route, Switch, Redirect} from 'react-router-dom'
 
-import Header from './Header'
-import TabItem from './TabItem'
-import ListCard from './ListCard'
-import LoaderCard from './LoaderCard'
-import FailureCard from './FailureCard'
+import LoginForm from './LoginForm'
+import Home from './Home'
+import Cart from './Cart'
 
-const apiStatus = {
-  success: 'SUCCESS',
-  loading: 'LOADING',
-  failure: 'FAILURE',
-}
+import CartContext from './context/CartContext'
+import ProtectedRouter from './ProtectedRouter'
 
-let updateData = []
+import './App.css'
 
 class App extends Component {
   state = {
-    list: [],
-    status: apiStatus.loading,
-    activeTabId: '',
-    DishesList: [],
-    cartItems: [],
-    name: [],
+    cartList: [],
   }
 
-  componentDidMount() {
-    this.getListData()
-  }
+  addCartItem = product => {
+    const {cartList} = this.state
 
-  getUpdateData = data =>
-    data.map(each => ({
-      menuCategory: each.menu_category,
-      menuCategoryId: each.menu_category_id,
-      menuCategoryImage: each.menu_category_image,
-      categoryDishes: each.category_dishes.map(eachDish => ({
-        dishId: eachDish.dish_id,
-        dishName: eachDish.dish_name,
-        dishImage: eachDish.dish_image,
-        dishPrice: eachDish.dish_price,
-        dishCurrency: eachDish.dish_currency,
-        dishCalories: eachDish.dish_calories,
-        dishType: eachDish.dish_Type,
-        dishAvailability: eachDish.dish_Availability,
-        dishDescription: eachDish.dish_description,
-        addOnCat: eachDish.addonCat,
-      })),
-    }))
-
-  getListData = async () => {
-    const url =
-      'https://apis2.ccbp.in/restaurant-app/restaurant-menu-list-details'
-    const response = await fetch(url)
-    const data = await response.json()
-    console.log(data)
-    if (response.ok) {
-      updateData = this.getUpdateData(data[0].table_menu_list)
-      this.setState({
-        status: apiStatus.success,
-        list: updateData,
-        name: data,
-        activeTabId: updateData[0].menuCategoryId,
-        DishesList: updateData[0].categoryDishes,
-      })
-    }
-  }
-
-  tabBtnClk = id => {
-    const {list} = this.state
-    const {categoryDishes} = list.find(each => each.menuCategoryId === id)
-    this.setState({activeTabId: id, DishesList: categoryDishes})
-  }
-
-  increseCartCount = dish => {
-    const {cartItems} = this.state
-    const isAlreadyExist = cartItems.find(each => each.dishId === dish.dishId)
-    if (!isAlreadyExist) {
-      const newDish = {...dish, quantity: 1}
-      this.setState(prev => ({cartItems: [...prev.cartItems, newDish]}))
-    } else {
+    const isProductPresent = cartList.find(
+      each => each.dishId === product.dishId,
+    )
+    if (isProductPresent) {
       this.setState(prev => ({
-        cartItems: prev.cartItems.map(each => {
-          if (each.dishId === dish.dishId) {
-            return {...each, quantity: each.quantity + 1}
+        cartList: prev.cartList.map(each => {
+          if (each.dishId === product.dishId) {
+            const updateQty = each.quantity + product.quantity
+            return {...each, quantity: updateQty}
+          } else {
+            each
           }
-          return {...each}
         }),
       }))
+    } else {
+      this.setState(prevState => ({cartList: [...prevState.cartList, product]}))
     }
   }
 
-  decresecartCount = dish => {
-    const {cartItems} = this.state
-    const isAlreadyExist = cartItems.find(each => each.dishId === dish.dishId)
-    if (isAlreadyExist) {
+  removeAllCartItems = () => {
+    this.setState({cartList: []})
+  }
+  incrementCartItemQuantity = dishId => {
+    console.log('2')
+    this.setState(prev => ({
+      cartList: prev.cartList.map(each => {
+        if (each.dishId === dishId) {
+          const updateQty = each.quantity + 1
+          return {...each, quantity: updateQty}
+        }
+        return each
+      }),
+    }))
+  }
+  decrementCartItemQuantity = dishId => {
+    const {cartList} = this.state
+    const productObj = cartList.find(each => each.dishId === dishId)
+    if (productObj.quantity > 1) {
+      // console.log('decrese')
       this.setState(prev => ({
-        cartItems: prev.cartItems
-          .map(each => {
-            if (each.dishId === dish.dishId) {
-              return {...each, quantity: each.quantity - 1}
-            }
-            return {...each}
-          })
-          .filter(each => each.quantity > 0),
+        cartList: prev.cartList.map(each => {
+          if (each.dishId === dishId) {
+            const updateQty = each.quantity - 1
+            return {...each, quantity: updateQty}
+          }
+          return each
+        }),
       }))
+    } else {
+      this.removeCartItem(dishId)
     }
   }
-
-  renderSuccessView = () => {
-    const {list, cartItems, name, activeTabId, DishesList} = this.state
-    return (
-      <>
-        <Header cartItems={cartItems} nameInput={name} />
-        <ul className="tab_container">
-          {list.map(each => (
-            <TabItem
-              data={each}
-              key={each.menuCategoryId}
-              tabClick={this.tabBtnClk}
-              isActive={activeTabId === each.menuCategoryId}
-            />
-          ))}
-        </ul>
-        <ul className="list_container">
-          {DishesList.map(each => (
-            <ListCard
-              data={each}
-              cartItems={cartItems}
-              key={each.dishId}
-              addCartCount={this.increseCartCount}
-              removeCartCount={this.decresecartCount}
-            />
-          ))}
-        </ul>
-      </>
-    )
-  }
-
-  renderLoaderView = () => <LoaderCard />
-
-  renderFailureView = () => <FailureCard />
-
-  renderFinalView = () => {
-    const {status} = this.state
-
-    switch (status) {
-      case apiStatus.success:
-        return this.renderSuccessView()
-      case apiStatus.loading:
-        return this.renderLoaderView()
-
-      case apiStatus.failure:
-        return this.renderFailureView()
-    }
+  removeCartItem = dishId => {
+    const {cartList} = this.state
+    const updateCartLiat = cartList.filter(each => each.dishId !== dishId)
+    this.setState({cartList: updateCartLiat})
   }
 
   render() {
-    
-    return <div className="container">{this.renderFinalView()}</div>
+    const {cartList} = this.state
+    //console.log(cartList)
+
+    return (
+      <CartContext.Provider
+        value={{
+          cartList,
+          removeAllCartItems: this.removeAllCartItems,
+          addCartItem: this.addCartItem,
+          removeCartItem: this.removeCartItem,
+          incrementCartItemQuantity: this.incrementCartItemQuantity,
+          decrementCartItemQuantity: this.decrementCartItemQuantity,
+        }}
+      >
+        <Switch>
+          <Route exact path="/login" component={LoginForm} />
+          <ProtectedRouter exact path="/" component={Home} />
+          <ProtectedRouter exact path="/cart" component={Cart} />
+        </Switch>
+      </CartContext.Provider>
+    )
   }
 }
 

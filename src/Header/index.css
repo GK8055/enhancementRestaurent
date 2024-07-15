@@ -43,3 +43,15 @@
   text-align: center;
   color: white;
 }
+.logout {
+  font-family: 'Roboto';
+  font-size: 20px;
+  color: white;
+  background-color: blue;
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 12px;
+}
+.link {
+  text-decoration: none;
+}
